@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Screen Multi-iframe Page with Poster and Domain Restriction</title>
+    <title>Full Screen Multi-iframe Page with Poster</title>
     <style>
         body, html {
             margin: 0;
@@ -71,15 +71,10 @@
             background-color: #575757;
         }
 
-        .error-message {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: red;
-            font-size: 20px;
-            z-index: 3;
+        /* Highlight the active service link */
+        .navbar a.active {
+            background-color: #2196F3; /* Blue color for active link */
+            color: white;
         }
     </style>
 </head>
@@ -89,18 +84,14 @@
         <div class="poster" id="poster"></div> <!-- Poster image -->
         <button class="menu-button" onclick="toggleMenu()">Menu</button>
         <div class="navbar" id="navbar">
-            <a href="#" onclick="loadIframe('https://www.hlsplayer.net/embed?type=m3u8&src=https://wtf.pstvlive.xyz/ps_live.php?ps=https://prod-sports-eng-cf.jiocinema.com/hls/live/2100299/hd_akamai_androidmob_avc_eng_indvsban_190924/master')">Service 1</a>
-            <a href="#" onclick="loadIframe('https://tv.mgsportstv.com/api/player/play.php?c=https://wtf.pstvlive.xyz/ps_live.php?ps=https://prod-sports-eng-cf.jiocinema.com/hls/live/2100299/hd_akamai_androidmob_avc_eng_indvsban_190924/master')">Service 2</a>
-            <a href="#" onclick="loadIframe('https://talhas.arena1premium.rf.gd/')">Service 3</a>
-            <a href="#" onclick="loadIframe('https://talhas.arena2premium.rf.gd/')">Service 4</a>
-            <a href="#" onclick="loadIframe('https://talhas.arena3premium.rf.gd/')">Service 5</a>
+            <a href="#" onclick="loadIframe('https://www.hlsplayer.net/embed?type=m3u8&src=https://wtf.pstvlive.xyz/ps_live.php?ps=https://prod-sports-eng-cf.jiocinema.com/hls/live/2100299/hd_akamai_androidmob_avc_eng_indvsban_190924/master', this)">Service 1</a>
+            <a href="#" onclick="loadIframe('https://tv.mgsportstv.com/api/player/play.php?c=https://wtf.pstvlive.xyz/ps_live.php?ps=https://prod-sports-eng-cf.jiocinema.com/hls/live/2100299/hd_akamai_androidmob_avc_eng_indvsban_190924/master', this)">Service 2</a>
+            <a href="#" onclick="loadIframe('https://talhas.arena1premium.rf.gd/', this)">Service 3</a>
+            <a href="#" onclick="loadIframe('https://talhas.arena2premium.rf.gd/', this)">Service 4</a>
+            <a href="#" onclick="loadIframe('https://talhas.arena3premium.rf.gd/', this)">Service 5</a>
         </div>
 
-        <iframe id="serviceFrame" onload="hidePoster()"></iframe>
-
-        <div class="error-message" id="error-message">
-            Error: This domain is not allowed.
-        </div>
+        <iframe id="serviceFrame" src="https://www.hlsplayer.net/embed?type=m3u8&src=https://wtf.pstvlive.xyz/ps_live.php?ps=https://prod-sports-eng-cf.jiocinema.com/hls/live/2100299/hd_akamai_androidmob_avc_eng_indvsban_190924/master" onload="hidePoster()"></iframe>
     </div>
 
     <script>
@@ -108,58 +99,38 @@
         function isValidEmbed() {
             const referrer = document.referrer;
             // Add allowed domains here
-            const allowedDomains = [
-                "https://wizardfc.official.rf.gd/",
-                "https://wizardfc.official.rf.gd/"
-            ];
-            return allowedDomains.some(domain => referrer.startsWith(domain));
+            const allowedDomains = ["https://wizardfc.official.rf.gd/", "https://wizardfc.official.rf.gd/"];
+            return allowedDomains.some(domain => referrer.includes(domain));
         }
 
         if (!isValidEmbed()) {
-            document.body.innerHTML = '<h1>চুরি করা মহাপাপ (By Order Of Talha, The Creator Of This Page)</h1><p></p>';
-        } else {
-            function loadIframe(serviceUrl) {
-                const domain = extractDomain(serviceUrl);
+            document.body.innerHTML = '<h1>চুরি করা মহাপাপ(By Order Of Talha, The Creator Of This Page)</h1>';
+        }
 
-                if (allowedDomains.includes(domain)) {
-                    document.getElementById('serviceFrame').src = serviceUrl;
-                    hideErrorMessage();
-                } else {
-                    showErrorMessage();
-                }
+        // Function to load a selected iframe service and mark it as active
+        function loadIframe(serviceUrl, linkElement) {
+            document.getElementById('serviceFrame').src = serviceUrl;
+            highlightActiveLink(linkElement);
+            toggleMenu();  // Close the menu after clicking a link
+        }
 
-                toggleMenu();  // Close the menu after clicking a link
-            }
+        // Function to highlight the active service link
+        function highlightActiveLink(activeLink) {
+            const links = document.querySelectorAll('.navbar a');
+            links.forEach(link => link.classList.remove('active'));  // Remove 'active' class from all links
+            activeLink.classList.add('active');  // Add 'active' class to the clicked link
+        }
 
-            // Extract the domain from a URL
-            function extractDomain(url) {
-                const a = document.createElement('a');
-                a.href = url;
-                return a.hostname.replace('www.', '');  // Remove 'www.' for matching
-            }
+        // Function to toggle the menu
+        function toggleMenu() {
+            const navbar = document.getElementById('navbar');
+            navbar.style.display = navbar.style.display === 'block' ? 'none' : 'block';
+        }
 
-            // Show error message if the domain is not allowed
-            function showErrorMessage() {
-                document.getElementById('error-message').style.display = 'block';
-                document.getElementById('serviceFrame').style.display = 'none';  // Hide iframe on error
-            }
-
-            // Hide error message when a valid domain is loaded
-            function hideErrorMessage() {
-                document.getElementById('error-message').style.display = 'none';
-                document.getElementById('serviceFrame').style.display = 'block';
-            }
-
-            // Function to hide the poster and show the iframe after it loads
-            function hidePoster() {
-                document.getElementById('poster').style.display = 'none'; // Hide poster once iframe is loaded
-            }
-
-            // Function to toggle the visibility of the menu
-            function toggleMenu() {
-                const navbar = document.getElementById('navbar');
-                navbar.style.display = navbar.style.display === 'block' ? 'none' : 'block';
-            }
+        // Function to hide the poster once the iframe is loaded
+        function hidePoster() {
+            document.getElementById('poster').style.display = 'none'; // Hide poster once iframe is loaded
+            document.getElementById('serviceFrame').style.display = 'block'; // Show iframe
         }
     </script>
 
