@@ -76,9 +76,40 @@
             background-color: #2196F3; /* Blue color for active link */
             color: white;
         }
+
+        /* Footer styling with scrolling text */
+        .footer {
+            ion: fixed;
+            top: 0;
+            width: 100%;
+            padding: 10px;
+            z-index: 3; /* Ensure it appears above other elements */
+            overflow: hidden; /* Hide any overflowed content */
+            background-color: transparent; /* Fully transparent background */
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll 30s linear infinite; /* Make the text scroll continuously */
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(52%); /* Start off-screen */
+            }
+            100% {
+                transform: translateX(-100%); /* Scroll to the left off-screen */
+            }
+        }
     </style>
 </head>
 <body>
+
+    <!-- Scrolling footer that will disappear after 40 seconds -->
+    <div class="footer" id="footer">
+        <div class="scrolling-text">This video may take 30 second To Play, After That, There Will Be No Buffering.  |  এই ভিডিওটি প্লে হতে 30 সেকেন্ড সময় লাগতে পারে, তারপর কোন বাফারিং হবে না।</div>
+    </div>
 
     <div class="iframe-container">
         <div class="poster" id="poster"></div> <!-- Poster image -->
@@ -133,6 +164,11 @@
             document.getElementById('poster').style.display = 'none'; // Hide poster once iframe is loaded
             document.getElementById('serviceFrame').style.display = 'block'; // Show iframe
         }
+
+        // Hide the footer after 40 seconds
+        setTimeout(function() {
+            document.getElementById('footer').style.display = 'none';
+        }, 33000); // 40 seconds
     </script>
 
 </body>
